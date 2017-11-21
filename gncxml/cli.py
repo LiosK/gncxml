@@ -6,7 +6,8 @@ import sys
 
 import gncxml
 
-def main(prog="gncxml"):
+def main(prog):
+    """Run command line interface."""
     args = build_argparser(prog).parse_args()
 
     try:
@@ -46,7 +47,7 @@ def main(prog="gncxml"):
 def build_argparser(prog):
     parser = argparse.ArgumentParser(
             prog=prog,
-            description="gncxml -- print entries in GnuCash data file as data frame"
+            description="gncxml - print entries in GnuCash data file as data frame"
             )
     parser.add_argument(
             "type",

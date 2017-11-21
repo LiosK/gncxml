@@ -1,7 +1,7 @@
 gncxml
 ======
 
-gncxml – extract entries in GnuCash data file as pandas.DataFrame
+gncxml - extract entries in GnuCash data file as pandas.DataFrame
 
 Installation
 ------------
@@ -17,7 +17,7 @@ Usage (Command Line)
 
     usage: gncxml [-h] [-l] [--csv] TYPE [FILE]
 
-    gncxml -- print entries in GnuCash data file as data frame
+    gncxml - print entries in GnuCash data file as data frame
 
     positional arguments:
       TYPE        type of entries to print (account | commodity | price | split |
