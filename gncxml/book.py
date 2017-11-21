@@ -1,7 +1,10 @@
 # vim: set fileencoding=utf-8 :
 
+import collections
 import decimal
 import xml.etree.ElementTree as ET
+
+import pandas as pd
 
 class Book:
 
@@ -21,66 +24,172 @@ class Book:
                 }
 
 
-    def accounts(self):
-        """Build account dictionary."""
+    def commodities(self):
+        """Return commodity data frame."""
         tx = self._findtext_wrapper(self._ns)
 
-        accounts = {}
+        cmds = []
+        for e in self._tree.findall("./gnc:book/gnc:commodity", self._ns):
+            cmdid = tx(e, "./cmdty:id")
+            cmds.append({
+                "space": tx(e, "./cmdty:space", ""),
+                "id": cmdid,
+                "name": tx(e, "./cmdty:name", cmdid),
+                "quote_source": tx(e, "./cmdty:quote_source", "NA"),
+                })
+
+        return pd.DataFrame(cmds, columns=[
+            "space",
+            "id",
+            "name",
+            "quote_source",
+            ]).set_index(["space", "id"])
+
+
+    def list_commodities(self):
+        """Return commodity data frame as flatten list."""
+        return self.commodities()
+
+
+    def accounts(self):
+        """Return account data frame."""
+        tx = self._findtext_wrapper(self._ns)
+
+        accounts = collections.OrderedDict()
         for e in self._tree.findall("./gnc:book/gnc:account", self._ns):
-            act = accounts[tx(e, "./act:id")] = {
+            cur = e.find("./act:id", self._ns)
+            cur_key = (cur_idtype, cur_id) = (cur.attrib.get("type", ""), cur.text)
+            parent = e.find("./act:parent", self._ns)
+            if parent is not None:
+                parent = (parent.attrib.get("type", ""), parent.text)
+            accounts[cur_key] = {
+                    "idtype": cur_idtype,
+                    "id": cur_id,
                     "name": tx(e, "./act:name"),
-                    "parent": accounts.get(tx(e, "./act:parent"), None), # XXX assuming order
-                    "cmdty:space": tx(e, "./act:commodity/cmdty:space"),
-                    "cmdty:id": tx(e, "./act:commodity/cmdty:id"),
+                    "type": tx(e, "./act:type"),
+                    "code": tx(e, "./act:code"),
+                    "description": tx(e, "./act:description"),
+                    "cmd_space": tx(e, "./act:commodity/cmdty:space", ""),
+                    "cmd_id": tx(e, "./act:commodity/cmdty:id"),
+                    "parent": parent,
                     }
-            is_root = act["parent"] is None
-            if not is_root:
-                is_toplevel = act["parent"]["parent"] is None
-                if is_toplevel:
-                    act["path"] = act["toplevel"] = act["name"]
-                else:
-                    act["path"] = act["parent"]["path"] + ":" + act["name"]
-                    act["toplevel"] = act["parent"]["toplevel"]
 
-        return accounts
+        def retrieve_path(e):
+            if "toplevel" in e: # already set
+                return e
+            if e["parent"] is None: # root
+                e["path"] = e["toplevel"] = None
+                return e
+            parent = retrieve_path(accounts[e["parent"]])
+            if parent["toplevel"] is None: # toplevel
+                e["path"] = e["toplevel"] = e["name"]
+            else:
+                e["path"] = parent["path"] + ":" + e["name"]
+                e["toplevel"] = parent["toplevel"]
+            return e
 
-    def commodities(self):
-        pass
+        return pd.DataFrame([retrieve_path(e) for e in accounts.values()], columns=[
+            "idtype",
+            "id",
+            "path",
+            "toplevel",
+            "type",
+            "code",
+            "description",
+            "cmd_space",
+            "cmd_id",
+            # "name",
+            # "parent",
+            ]).set_index(["idtype", "id"])
+
+
+    def list_accounts(self):
+        """Return account data frame as flatten list."""
+        cmds = self.commodities().add_prefix("cmd_")
+        return self.accounts().join(cmds, ["cmd_space", "cmd_id"])
+
+
+    def transactions(self):
+        """Return transaction data frame."""
+        tx = self._findtext_wrapper(self._ns)
+
+        trns = []
+        for e in self._tree.findall("./gnc:book/gnc:transaction", self._ns):
+            trnid = e.find("./trn:id", self._ns)
+            trns.append({
+                "idtype": trnid.attrib.get("type", ""),
+                "id": trnid.text,
+                "date": pd.Timestamp(tx(e, "./trn:date-posted/ts:date").split(" ")[0]),
+                "description": tx(e, "./trn:description"),
+                "cmd_space": tx(e, "./trn:currency/cmdty:space", ""),
+                "cmd_id": tx(e, "./trn:currency/cmdty:id"),
+                })
+
+        return pd.DataFrame(trns, columns=[
+            "idtype",
+            "id",
+            "date",
+            "description",
+            "cmd_space",
+            "cmd_id",
+            ]).set_index(["idtype", "id"])
+
 
     def list_transactions(self):
-        pass
+        """Return transaction data frame as flatten list."""
+        cmds = self.commodities().add_prefix("cmd_")
+        return self.transactions().join(cmds, ["cmd_space", "cmd_id"])
 
-    def list_splits(self):
-        """Build list of split records."""
+
+    def splits(self):
+        """Return split data frame."""
         tx = self._findtext_wrapper(self._ns)
-        def frac2decimal(frac):
-            (num, den) = frac.split("/")
+
+        def parse_num(strfrac):
+            (num, den) = strfrac.split("/")
             return decimal.Decimal(num) / decimal.Decimal(den)
 
-        accounts = self.accounts()
-        splits = []
-        for trn in self._tree.findall("./gnc:book/gnc:transaction", self._ns):
+        sps = []
+        for e in self._tree.findall("./gnc:book/gnc:transaction", self._ns):
+            trnid = e.find("./trn:id", self._ns)
             header = {
-                    "tr_date": tx(trn, "./trn:date-posted/ts:date").split(" ")[0],
-                    "tr_desc": tx(trn, "./trn:description"),
-                    "tr_cmsp": tx(trn, "./trn:currency/cmdty:space"),
-                    "tr_cmid": tx(trn, "./trn:currency/cmdty:id"),
+                    "trn_idtype": trnid.attrib.get("type", ""),
+                    "trn_id": trnid.text,
                     }
-
-            for sp in trn.findall("./trn:splits/trn:split", self._ns):
-                act = accounts[tx(sp, "./split:account")]
-                splits.append({
+            for sp in e.findall("./trn:splits/trn:split", self._ns):
+                spid = sp.find("./split:id", self._ns)
+                actid = sp.find("./split:account", self._ns)
+                sps.append({
+                    "idtype": spid.attrib.get("type", ""),
+                    "id": spid.text,
+                    "memo": tx(sp, "./split:memo", ""),
+                    "reconciled": tx(sp, "./split:reconciled-state", ""),
+                    "value": parse_num(tx(sp, "./split:value")),
+                    "quantity": parse_num(tx(sp, "./split:quantity")),
+                    "act_idtype": actid.attrib.get("type", ""),
+                    "act_id": actid.text,
                     **header,
-                    "sp_memo": tx(sp, "./split:memo", ""),
-                    "sp_act": act["path"],
-                    "sp_top": act["toplevel"],
-                    "sp_cmsp": act["cmdty:space"],
-                    "sp_cmid": act["cmdty:id"],
-                    "quantity": frac2decimal(tx(sp, "./split:quantity")),
-                    "value": frac2decimal(tx(sp, "./split:value")),
                     })
 
-        return splits
+        return pd.DataFrame(sps, columns=[
+            "idtype",
+            "id",
+            "memo",
+            "reconciled",
+            "value",
+            "quantity",
+            "act_idtype",
+            "act_id",
+            "trn_idtype",
+            "trn_id",
+            ]).set_index(["idtype", "id"])
+
+
+    def list_splits(self):
+        """Return split data frame as flatten list."""
+        acts = self.list_accounts().add_prefix("act_")
+        trns = self.list_transactions().add_prefix("trn_")
+        return self.splits().join(acts, ["act_idtype", "act_id"]).join(trns, ["trn_idtype", "trn_id"])
 
 
     def _findtext_wrapper(self, ns):

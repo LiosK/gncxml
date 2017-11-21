@@ -4,13 +4,12 @@
 import os
 import sys
 import gzip
-import pandas as pd
 
 import gncxml
 
 def main():
     if len(sys.argv) <= 1:
-        print("Usage: {0} GNC_XML".format(sys.argv[0]), file=sys.stderr)
+        print("Usage: {0} FILE".format(sys.argv[0]), file=sys.stderr)
         sys.exit(os.EX_USAGE)
 
     try:
@@ -20,21 +19,25 @@ def main():
         print(err, file=sys.stderr)
         sys.exit(os.EX_NOINPUT)
 
-    splits = book.list_splits()
-    csv = pd.DataFrame(splits, columns=[
-        "tr_date",
-        "tr_desc",
-        "tr_cmsp",
-        "tr_cmid",
-        "sp_top",
-        "sp_act",
-        "sp_memo",
-        "sp_cmsp",
-        "sp_cmid",
-        "quantity",
-        "value",
-        ]).to_csv()
-    print(csv)
+    splits = book.list_splits().reset_index()
+    print(splits[[
+        'trn_date',
+        'trn_description',
+        'trn_cmd_space',
+        'trn_cmd_id',
+        'trn_cmd_name',
+        'act_path',
+        'act_toplevel',
+        'act_type',
+        'act_code',
+        'act_cmd_space',
+        'act_cmd_id',
+        'act_cmd_name',
+        'memo',
+        'reconciled',
+        'quantity',
+        'value',
+        ]].to_csv(index=False))
 
 
 if __name__ == "__main__":
