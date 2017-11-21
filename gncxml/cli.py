@@ -46,12 +46,12 @@ def main(prog="gncxml"):
 def build_argparser(prog):
     parser = argparse.ArgumentParser(
             prog=prog,
-            description="Extract entries from GnuCash data file."
+            description="gncxml -- print entries in GnuCash data file as data frame"
             )
     parser.add_argument(
             "type",
             choices=["account", "act", "commodity", "cmdty", "price", "split", "sp", "transaction", "trn"],
-            help="type of data to extract (account | commodity | price | split | transaction)",
+            help="type of entries to print (account | commodity | price | split | transaction)",
             metavar="TYPE"
             )
     parser.add_argument(
@@ -63,7 +63,7 @@ def build_argparser(prog):
             metavar="FILE"
             )
     parser.add_argument("-l", "--long", action="store_true", help="list in long format")
-    parser.add_argument("--csv", action="store_true", help="output in csv format")
+    parser.add_argument("--csv", action="store_true", help="print in csv format")
     return parser
 
 
