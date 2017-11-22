@@ -1,7 +1,6 @@
 # vim: set fileencoding=utf-8 :
 
 import argparse
-import gzip
 import sys
 
 import gncxml
@@ -11,10 +10,9 @@ def main(prog):
     args = build_argparser(prog).parse_args()
 
     try:
-        with gzip.open(args.file) as f:
-            book = gncxml.Book(f)
+        book = gncxml.Book(args.file)
     except OSError as err:
-        sys.exit("error: {0} '{1}'".format(err, args.file.name))
+        sys.exit(err)
 
     df = None
     tp = None
@@ -71,7 +69,7 @@ def build_argparser(prog):
 def get_select_cols(tp):
     return {
             "account": ["path", "toplevel", "code", "description", "cmd_space", "cmd_id"],
-            "commodity": ["space", "id", "name", "quote_source"],
+            "commodity": ["space", "id", "name", "xcode", "fraction"],
             "price": ["time", "cmd_space", "cmd_id", "crncy_space", "crncy_id", "source", "type", "value"],
             "split": [
                 'trn_date', 'trn_description', 'trn_crncy_space', 'trn_crncy_id',

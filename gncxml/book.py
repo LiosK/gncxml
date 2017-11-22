@@ -3,18 +3,21 @@
 from decimal import Decimal
 from fractions import Fraction
 import collections
+import gzip
 import xml.etree.ElementTree as ET
 
 import pandas as pd
 
 class Book:
 
-    def __init__(self, source):
+    def __init__(self, gncfile):
         """
-        source : file object
-            Gunzipped GnuCash XML data
+        gncfile : file name or file object
+            Gzipped GnuCash XML data file
         """
-        self._tree = ET.parse(source)
+        with gzip.open(gncfile) as source:
+            self._tree = ET.parse(source)
+
         self._ns = {
                 "act": "http://www.gnucash.org/XML/act",
                 "cmdty": "http://www.gnucash.org/XML/cmdty",
@@ -37,13 +40,17 @@ class Book:
                 "space": tx(e, "./cmdty:space", ""),
                 "id": cmdid,
                 "name": tx(e, "./cmdty:name", cmdid),
-                "quote_source": tx(e, "./cmdty:quote_source", "NA"),
+                "xcode": tx(e, "./cmdty:xcode"),
+                "fraction": tx(e, "./cmdty:fraction"),
+                "quote_source": tx(e, "./cmdty:quote_source"),
                 })
 
         return pd.DataFrame(items, columns=[
             "space",
             "id",
             "name",
+            "xcode",
+            "fraction",
             "quote_source",
             ]).set_index(["space", "id"])
 
@@ -154,10 +161,10 @@ class Book:
         """Return transaction data frame."""
         tx = self._findtext_wrapper(self._ns)
 
-        trns = []
+        items = []
         for e in self._tree.findall("./gnc:book/gnc:transaction", self._ns):
             trnid = e.find("./trn:id", self._ns)
-            trns.append({
+            items.append({
                 "idtype": trnid.attrib.get("type", ""),
                 "id": trnid.text,
                 "date": pd.Timestamp(tx(e, "./trn:date-posted/ts:date").split(" ")[0]),
@@ -166,7 +173,7 @@ class Book:
                 "crncy_id": tx(e, "./trn:currency/cmdty:id"),
                 })
 
-        return pd.DataFrame(trns, columns=[
+        return pd.DataFrame(items, columns=[
             "idtype",
             "id",
             "date",
@@ -186,7 +193,7 @@ class Book:
         """Return split data frame."""
         tx = self._findtext_wrapper(self._ns)
 
-        sps = []
+        items = []
         for e in self._tree.findall("./gnc:book/gnc:transaction", self._ns):
             trnid = e.find("./trn:id", self._ns)
             header = {
@@ -198,7 +205,7 @@ class Book:
                 actid = sp.find("./split:account", self._ns)
                 val = Fraction(tx(sp, "./split:value"))
                 qty = Fraction(tx(sp, "./split:quantity"))
-                sps.append({
+                items.append({
                     "idtype": spid.attrib.get("type", ""),
                     "id": spid.text,
                     "memo": tx(sp, "./split:memo", ""),
@@ -212,7 +219,7 @@ class Book:
                     **header,
                     })
 
-        return pd.DataFrame(sps, columns=[
+        return pd.DataFrame(items, columns=[
             "idtype",
             "id",
             "memo",

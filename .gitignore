@@ -8,3 +8,6 @@ __pycache__/
 .ipynb_checkpoints/
 
 /.venv/
+
+# private files
+mybook.gnucash

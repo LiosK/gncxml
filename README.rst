@@ -34,16 +34,21 @@ Usage (Python Module)
 
 .. code:: python
 
-    import gzip
+    import sys
     import gncxml
 
-    filename = "mybook.gnucash"
-    with gzip.open(filename) as xml:
-        book = gncxml.Book(xml)
+    try:
+        book = gncxml.Book("mybook.gnucash")
+    except OSError as err:
+        sys.exit(err)
 
     # Extract splits as pandas.DataFrame
     df = book.list_splits()
     print(df[df["trn_date"] >= "2017-10-01"].to_csv())
+
+See also: `examples/module_usage.ipynb`_
+
+.. _examples/module_usage.ipynb: https://github.com/LiosK/gncxml/blob/master/examples/module_usage.ipynb
 
 License
 -------
