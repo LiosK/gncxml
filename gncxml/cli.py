@@ -14,8 +14,8 @@ def main(prog):
     except OSError as err:
         sys.exit(err)
 
-    df = None
     tp = None
+    df = None
     if args.type in {"account", "act"}:
         tp = "account"
         df = book.list_accounts()
@@ -69,7 +69,7 @@ def build_argparser(prog):
 def get_select_cols(tp):
     return {
             "account": ["path", "toplevel", "code", "description", "cmd_space", "cmd_id"],
-            "commodity": ["space", "id", "name", "xcode", "fraction"],
+            "commodity": ["space", "id", "name", "xcode", "exponent"],
             "price": ["time", "cmd_space", "cmd_id", "crncy_space", "crncy_id", "source", "type", "value"],
             "split": [
                 'trn_date', 'trn_description', 'trn_crncy_space', 'trn_crncy_id',

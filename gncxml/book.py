@@ -4,9 +4,12 @@ from decimal import Decimal
 from fractions import Fraction
 import collections
 import gzip
+import re
 import xml.etree.ElementTree as ET
 
 import pandas as pd
+
+import gncxml.iso4217 as iso4217
 
 class Book:
 
@@ -34,16 +37,25 @@ class Book:
         tx = self._findtext_wrapper(self._ns)
 
         items = []
+        dec = re.compile(r"^10*$")
         for e in self._tree.findall("./gnc:book/gnc:commodity", self._ns):
+            space = tx(e, "./cmdty:space", "")
             cmdid = tx(e, "./cmdty:id")
-            items.append({
-                "space": tx(e, "./cmdty:space", ""),
-                "id": cmdid,
-                "name": tx(e, "./cmdty:name", cmdid),
-                "xcode": tx(e, "./cmdty:xcode"),
-                "fraction": tx(e, "./cmdty:fraction"),
-                "quote_source": tx(e, "./cmdty:quote_source"),
-                })
+            crncy = {"name": None, "fraction": None}
+            if space == "ISO4217":
+                crncy = iso4217.get(cmdid, crncy)
+            item = {
+                    "space": space,
+                    "id": cmdid,
+                    "name": tx(e, "./cmdty:name", crncy["name"]),
+                    "xcode": tx(e, "./cmdty:xcode"),
+                    "fraction": tx(e, "./cmdty:fraction", crncy["fraction"]),
+                    "exponent": None,
+                    "quote_source": tx(e, "./cmdty:quote_source"),
+                    }
+            if dec.match(item["fraction"] or ""):
+                item["exponent"] = len(item["fraction"]) - 1.0  # float to treat NaN
+            items.append(item)
 
         return pd.DataFrame(items, columns=[
             "space",
@@ -51,6 +63,7 @@ class Book:
             "name",
             "xcode",
             "fraction",
+            "exponent",
             "quote_source",
             ]).set_index(["space", "id"])
 
