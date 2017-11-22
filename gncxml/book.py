@@ -139,19 +139,15 @@ class Book:
                 "type",
                 "value",
                 "value_frac",
-            ]).set_index(["time", "cmd_space", "cmd_id", "crncy_space", "crncy_id"])
+            ])
 
 
     def list_prices(self):
         """Return price data frame as flatten list."""
         cmds = self.commodities()
-        return self.prices().reset_index().join(
+        return self.prices().join(
                 cmds.add_prefix("cmd_"), ["cmd_space", "cmd_id"]
-                ).join(
-                        cmds.add_prefix("crncy_"), ["crncy_space", "crncy_id"]
-                        ).set_index(
-                                ["time", "cmd_space", "cmd_id", "crncy_space", "crncy_id"]
-                                )
+                ).join(cmds.add_prefix("crncy_"), ["crncy_space", "crncy_id"])
 
 
     def transactions(self):

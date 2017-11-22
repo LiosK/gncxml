@@ -39,7 +39,7 @@ def main(prog):
         df = df[get_select_cols(tp)]
 
     if args.csv:
-        print(df.to_csv(index=False))
+        print(df.to_csv(index=False), end="")
     else:
         print(df.to_string(index=False))
 
