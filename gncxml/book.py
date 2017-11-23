@@ -9,7 +9,7 @@ import xml.etree.ElementTree as ET
 
 import pandas as pd
 
-import gncxml.iso4217 as iso4217
+import gncxml._iso4217 as iso4217
 
 class Book:
 
@@ -44,18 +44,19 @@ class Book:
             crncy = {"name": None, "fraction": None}
             if space == "ISO4217":
                 crncy = iso4217.get(cmdid, crncy)
-            item = {
-                    "space": space,
-                    "id": cmdid,
-                    "name": tx(e, "./cmdty:name", crncy["name"]),
-                    "xcode": tx(e, "./cmdty:xcode"),
-                    "fraction": tx(e, "./cmdty:fraction", crncy["fraction"]),
-                    "exponent": None,
-                    "quote_source": tx(e, "./cmdty:quote_source"),
-                    }
-            if dec.match(item["fraction"] or ""):
-                item["exponent"] = len(item["fraction"]) - 1.0  # float to treat NaN
-            items.append(item)
+            frac = tx(e, "./cmdty:fraction", crncy["fraction"])
+            exponent = None
+            if frac is not None and dec.match(frac):
+                exponent = len(frac) - 1.0  # float to treat NaN
+            items.append({
+                "space": space,
+                "id": cmdid,
+                "name": tx(e, "./cmdty:name", crncy["name"]),
+                "xcode": tx(e, "./cmdty:xcode"),
+                "fraction": frac,
+                "exponent": exponent,
+                "quote_source": tx(e, "./cmdty:quote_source"),
+                })
 
         return pd.DataFrame(items, columns=[
             "space",

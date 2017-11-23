@@ -1,4 +1,4 @@
 # vim: set fileencoding=utf-8 :
 
-import gncxml
-gncxml.main("python -m gncxml")
+import gncxml._cli
+gncxml._cli.main("python -m gncxml")
