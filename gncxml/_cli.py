@@ -7,7 +7,7 @@ import gncxml
 
 def main(prog):
     """Run command line interface."""
-    args = build_argparser(prog).parse_args()
+    args = _build_argparser(prog).parse_args()
 
     try:
         book = gncxml.Book(args.file)
@@ -34,7 +34,7 @@ def main(prog):
 
     df.reset_index(inplace=True)
     if not args.long:
-        df = df[get_select_cols(tp)]
+        df = df[_get_select_cols(tp)]
 
     if args.csv:
         print(df.to_csv(index=False), end="")
@@ -42,7 +42,7 @@ def main(prog):
         print(df.to_string(index=False))
 
 
-def build_argparser(prog):
+def _build_argparser(prog):
     parser = argparse.ArgumentParser(
             prog=prog,
             description="gncxml - print entries in GnuCash data file as data frame"
@@ -66,7 +66,7 @@ def build_argparser(prog):
     return parser
 
 
-def get_select_cols(tp):
+def _get_select_cols(tp):
     return {
             "account": ["path", "toplevel", "code", "description", "cmd_space", "cmd_id"],
             "commodity": ["space", "id", "name", "xcode", "exponent"],

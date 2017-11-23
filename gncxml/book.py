@@ -12,9 +12,12 @@ import pandas as pd
 import gncxml._iso4217 as iso4217
 
 class Book:
+    """Parse GnuCash XML data file and provide interface to read journal entries and master data tables."""
 
     def __init__(self, gncfile):
         """
+        Parameters
+        ----------
         gncfile : file name or file object
             Gzipped GnuCash XML data file
         """
@@ -33,7 +36,7 @@ class Book:
 
 
     def commodities(self):
-        """Return commodity data frame."""
+        """Return commodity (aka currency) entries as pandas.DataFrame."""
         tx = self._findtext_wrapper(self._ns)
 
         items = []
@@ -70,12 +73,12 @@ class Book:
 
 
     def list_commodities(self):
-        """Return commodity data frame as flatten list."""
+        """Return commodity (aka currency) entries as pandas.DataFrame (synonym for commodities())."""
         return self.commodities()
 
 
     def accounts(self):
-        """Return account data frame."""
+        """Return account entries as pandas.DataFrame."""
         tx = self._findtext_wrapper(self._ns)
 
         items = collections.OrderedDict()
@@ -127,12 +130,12 @@ class Book:
 
 
     def list_accounts(self):
-        """Return account data frame as flatten list."""
+        """Return account entries as flat pandas.DataFrame after joining relevant tables."""
         cmds = self.commodities().add_prefix("cmd_")
         return self.accounts().join(cmds, ["cmd_space", "cmd_id"])
 
     def prices(self):
-        """Return price data frame."""
+        """Return commodity price entries as pandas.DataFrame."""
         tx = self._findtext_wrapper(self._ns)
 
         items = []
@@ -164,7 +167,7 @@ class Book:
 
 
     def list_prices(self):
-        """Return price data frame as flatten list."""
+        """Return commodity price entries as flat pandas.DataFrame after joining relevant tables."""
         cmds = self.commodities()
         return self.prices().join(
                 cmds.add_prefix("cmd_"), ["cmd_space", "cmd_id"]
@@ -172,7 +175,7 @@ class Book:
 
 
     def transactions(self):
-        """Return transaction data frame."""
+        """Return transaction (aka header) entries as pandas.DataFrame."""
         tx = self._findtext_wrapper(self._ns)
 
         items = []
@@ -198,13 +201,13 @@ class Book:
 
 
     def list_transactions(self):
-        """Return transaction data frame as flatten list."""
+        """Return transaction (aka header) entries as flat pandas.DataFrame after joining relevant tables."""
         cmds = self.commodities().add_prefix("crncy_")
         return self.transactions().join(cmds, ["crncy_space", "crncy_id"])
 
 
     def splits(self):
-        """Return split data frame."""
+        """Return split (aka line item) entries as pandas.DataFrame."""
         tx = self._findtext_wrapper(self._ns)
 
         items = []
@@ -250,7 +253,7 @@ class Book:
 
 
     def list_splits(self):
-        """Return split data frame as flatten list."""
+        """Return split (aka line item) entries as flat pandas.DataFrame after joining relevant tables."""
         acts = self.list_accounts().add_prefix("act_")
         trns = self.list_transactions().add_prefix("trn_")
         return self.splits().join(acts, ["act_idtype", "act_id"]).join(trns, ["trn_idtype", "trn_id"])
