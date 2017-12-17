@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
         name="gncxml",
-        version="0.2.4",
+        version="0.3.0",
         description="Extract entries from GnuCash data file to pandas.DataFrame.",
         long_description="Extract entries from GnuCash data file to pandas.DataFrame.",
         author="LiosK",
@@ -13,9 +13,8 @@ setup(
         scripts=["scripts/gncxml"],
         packages=["gncxml"],
         install_requires=["pandas"],
-        license="MIT License",
         classifiers=[
-            "License :: OSI Approved :: MIT License",
+            "License :: OSI Approved :: Apache Software License",
             "Programming Language :: Python :: 3 :: Only",
             "Topic :: Office/Business :: Financial",
             "Topic :: Software Development :: Libraries :: Python Modules",
