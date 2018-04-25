@@ -45,7 +45,7 @@ class Book:
             space = tx(e, "./cmdty:space", "")
             cmdid = tx(e, "./cmdty:id")
             crncy = {"name": None, "fraction": None}
-            if space == "ISO4217":
+            if space in {"CURRENCY", "ISO4217"}:
                 crncy = iso4217.get(cmdid, crncy)
             frac = tx(e, "./cmdty:fraction", crncy["fraction"])
             exponent = None
