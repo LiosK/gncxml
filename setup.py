@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
         name="gncxml",
-        version="0.3.2",
+        version="0.3.3",
         description="Extract entries from GnuCash data file to pandas.DataFrame.",
         long_description="Extract entries from GnuCash data file to pandas.DataFrame.",
         author="LiosK",
