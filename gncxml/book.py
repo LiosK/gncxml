@@ -14,15 +14,19 @@ import gncxml._iso4217 as iso4217
 class Book:
     """Parse GnuCash XML data file and provide interface to read journal entries and master data tables."""
 
-    def __init__(self, gncfile):
+    def __init__(self, gncfile, gzipped=True):
         """
         Parameters
         ----------
         gncfile : file name or file object
-            Gzipped GnuCash XML data file
+            GnuCash XML data file
         """
-        with gzip.open(gncfile) as source:
-            self._tree = ET.parse(source)
+        if gzipped:
+            with gzip.open(gncfile) as source:
+                self._tree = ET.parse(source)
+        else:
+            with open(gncfile, 'rb') as source:
+                self._tree = ET.parse(source)
 
         self._ns = {
                 "act": "http://www.gnucash.org/XML/act",
