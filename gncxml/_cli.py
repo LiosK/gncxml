@@ -58,7 +58,7 @@ def _build_argparser(prog):
             nargs="?",
             default=sys.stdin.buffer,
             type=argparse.FileType("rb"),
-            help="GnuCash data file (gzipped XML format)",
+            help="GnuCash data file (XML format)",
             metavar="FILE"
             )
     parser.add_argument("-l", "--long", action="store_true", help="list in long format")

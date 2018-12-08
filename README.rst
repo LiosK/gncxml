@@ -22,7 +22,7 @@ Usage (Command Line)
     positional arguments:
       TYPE        type of entries to print (account | commodity | price | split |
                   transaction)
-      FILE        GnuCash data file (gzipped XML format)
+      FILE        GnuCash data file (XML format)
 
     optional arguments:
       -h, --help  show this help message and exit

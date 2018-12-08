@@ -18,11 +18,25 @@ class Book:
         """
         Parameters
         ----------
-        gncfile : file name or file object
-            Gzipped GnuCash XML data file
+        gncfile : file name or file object (io.BufferedReader)
+            GnuCash data file (XML format)
         """
-        with gzip.open(gncfile) as source:
-            self._tree = ET.parse(source)
+        if hasattr(gncfile, "buffer"):
+            # in case io.TextIOWrapper is passed
+            gncfile = gncfile.buffer
+
+        gzmagic = b"\x1f\x8b"
+        if hasattr(gncfile, "peek"):
+            gzipped = gncfile.peek(2).startswith(gzmagic)
+        else:
+            with open(gncfile, "rb") as source:
+                gzipped = source.peek(2).startswith(gzmagic)
+
+        if gzipped:
+            with gzip.open(gncfile) as source:
+                self._tree = ET.parse(source)
+        else:
+            self._tree = ET.parse(gncfile)
 
         self._ns = {
                 "act": "http://www.gnucash.org/XML/act",
