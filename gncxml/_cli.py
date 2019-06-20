@@ -5,14 +5,14 @@ import sys
 
 import gncxml
 
-def main(prog):
+def main():
     """Run command line interface."""
-    args = _build_argparser(prog).parse_args()
+    args = _build_argparser().parse_args()
 
     try:
         book = gncxml.Book(args.file)
     except OSError as err:
-        sys.exit(err)
+        return err
 
     tp = None
     df = None
@@ -42,9 +42,8 @@ def main(prog):
         print(df.to_string(index=False))
 
 
-def _build_argparser(prog):
+def _build_argparser():
     parser = argparse.ArgumentParser(
-            prog=prog,
             description="gncxml - print entries in GnuCash data file as data frame"
             )
     parser.add_argument(
