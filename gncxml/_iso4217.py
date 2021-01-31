@@ -3,6 +3,7 @@
 def get(ccy, default=None):
     return _dump.get(ccy, default)
 
+
 if __name__ == "__main__":
     """Download and dump ISO4217 current currency list."""
     import urllib.request
@@ -16,9 +17,9 @@ if __name__ == "__main__":
         if ccy is not None:
             exp = e.findtext("./CcyMnrUnts", "N.A.")
             items[ccy] = {
-                    "name": e.findtext("./CcyNm"),
-                    "fraction": None if exp == "N.A." else "1" + "0" * int(exp),
-                    }
+                "name": e.findtext("./CcyNm"),
+                "fraction": None if exp == "N.A." else "1" + "0" * int(exp),
+            }
     print(items)
 
 _dump = \

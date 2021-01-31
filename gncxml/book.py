@@ -11,6 +11,7 @@ import pandas as pd
 
 import gncxml._iso4217 as iso4217
 
+
 class Book:
     """Parse GnuCash XML data file and provide interface to read journal entries and master data tables."""
 
@@ -39,15 +40,14 @@ class Book:
             self._tree = ET.parse(gncfile)
 
         self._ns = {
-                "act": "http://www.gnucash.org/XML/act",
-                "cmdty": "http://www.gnucash.org/XML/cmdty",
-                "gnc": "http://www.gnucash.org/XML/gnc",
-                "price": "http://www.gnucash.org/XML/price",
-                "split": "http://www.gnucash.org/XML/split",
-                "trn": "http://www.gnucash.org/XML/trn",
-                "ts": "http://www.gnucash.org/XML/ts",
-                }
-
+            "act": "http://www.gnucash.org/XML/act",
+            "cmdty": "http://www.gnucash.org/XML/cmdty",
+            "gnc": "http://www.gnucash.org/XML/gnc",
+            "price": "http://www.gnucash.org/XML/price",
+            "split": "http://www.gnucash.org/XML/split",
+            "trn": "http://www.gnucash.org/XML/trn",
+            "ts": "http://www.gnucash.org/XML/ts",
+        }
 
     def commodities(self):
         """Return commodity (aka currency) entries as pandas.DataFrame."""
@@ -73,7 +73,7 @@ class Book:
                 "fraction": frac,
                 "exponent": exponent,
                 "quote_source": tx(e, "./cmdty:quote_source"),
-                })
+            })
 
         return pd.DataFrame(items, columns=[
             "space",
@@ -83,13 +83,11 @@ class Book:
             "fraction",
             "exponent",
             "quote_source",
-            ]).set_index(["space", "id"])
-
+        ]).set_index(["space", "id"])
 
     def list_commodities(self):
         """Return commodity (aka currency) entries as pandas.DataFrame (synonym for commodities())."""
         return self.commodities()
-
 
     def accounts(self):
         """Return account entries as pandas.DataFrame."""
@@ -98,30 +96,31 @@ class Book:
         items = collections.OrderedDict()
         for e in self._tree.findall("./gnc:book/gnc:account", self._ns):
             cur = e.find("./act:id", self._ns)
-            cur_key = (cur_idtype, cur_id) = (cur.attrib.get("type", ""), cur.text)
+            cur_key = (cur_idtype, cur_id) = (
+                cur.attrib.get("type", ""), cur.text)
             parent = e.find("./act:parent", self._ns)
             if parent is not None:
                 parent = (parent.attrib.get("type", ""), parent.text)
             items[cur_key] = {
-                    "idtype": cur_idtype,
-                    "id": cur_id,
-                    "name": tx(e, "./act:name"),
-                    "type": tx(e, "./act:type"),
-                    "code": tx(e, "./act:code"),
-                    "description": tx(e, "./act:description"),
-                    "cmd_space": tx(e, "./act:commodity/cmdty:space", ""),
-                    "cmd_id": tx(e, "./act:commodity/cmdty:id"),
-                    "parent": parent,
-                    }
+                "idtype": cur_idtype,
+                "id": cur_id,
+                "name": tx(e, "./act:name"),
+                "type": tx(e, "./act:type"),
+                "code": tx(e, "./act:code"),
+                "description": tx(e, "./act:description"),
+                "cmd_space": tx(e, "./act:commodity/cmdty:space", ""),
+                "cmd_id": tx(e, "./act:commodity/cmdty:id"),
+                "parent": parent,
+            }
 
         def retrieve_path(e):
-            if "toplevel" in e: # already set
+            if "toplevel" in e:  # already set
                 return e
-            if e["parent"] is None: # root
+            if e["parent"] is None:  # root
                 e["path"] = e["toplevel"] = None
                 return e
             parent = retrieve_path(items[e["parent"]])
-            if parent["toplevel"] is None: # toplevel
+            if parent["toplevel"] is None:  # toplevel
                 e["path"] = e["toplevel"] = e["name"]
             else:
                 e["path"] = parent["path"] + ":" + e["name"]
@@ -140,8 +139,7 @@ class Book:
             "cmd_id",
             # "name",
             # "parent",
-            ]).set_index(["idtype", "id"])
-
+        ]).set_index(["idtype", "id"])
 
     def list_accounts(self):
         """Return account entries as flat pandas.DataFrame after joining relevant tables."""
@@ -165,28 +163,26 @@ class Book:
                 "type": tx(e, "./price:type", "unknown"),
                 "value": Decimal(val.numerator) / Decimal(val.denominator),
                 "value_frac": val,
-                })
+            })
 
         return pd.DataFrame(items, columns=[
-                "time",
-                "cmd_space",
-                "cmd_id",
-                "crncy_space",
-                "crncy_id",
-                "source",
-                "type",
-                "value",
-                "value_frac",
-            ])
-
+            "time",
+            "cmd_space",
+            "cmd_id",
+            "crncy_space",
+            "crncy_id",
+            "source",
+            "type",
+            "value",
+            "value_frac",
+        ])
 
     def list_prices(self):
         """Return commodity price entries as flat pandas.DataFrame after joining relevant tables."""
         cmds = self.commodities()
         return self.prices().join(
-                cmds.add_prefix("cmd_"), ["cmd_space", "cmd_id"]
-                ).join(cmds.add_prefix("crncy_"), ["crncy_space", "crncy_id"])
-
+            cmds.add_prefix("cmd_"), ["cmd_space", "cmd_id"]
+        ).join(cmds.add_prefix("crncy_"), ["crncy_space", "crncy_id"])
 
     def transactions(self):
         """Return transaction (aka header) entries as pandas.DataFrame."""
@@ -203,7 +199,7 @@ class Book:
                 "description": tx(e, "./trn:description"),
                 "crncy_space": tx(e, "./trn:currency/cmdty:space", ""),
                 "crncy_id": tx(e, "./trn:currency/cmdty:id"),
-                })
+            })
 
         return pd.DataFrame(items, columns=[
             "idtype",
@@ -213,14 +209,12 @@ class Book:
             "description",
             "crncy_space",
             "crncy_id",
-            ]).set_index(["idtype", "id"])
-
+        ]).set_index(["idtype", "id"])
 
     def list_transactions(self):
         """Return transaction (aka header) entries as flat pandas.DataFrame after joining relevant tables."""
         cmds = self.commodities().add_prefix("crncy_")
         return self.transactions().join(cmds, ["crncy_space", "crncy_id"])
-
 
     def splits(self):
         """Return split (aka line item) entries as pandas.DataFrame."""
@@ -230,9 +224,9 @@ class Book:
         for e in self._tree.findall("./gnc:book/gnc:transaction", self._ns):
             trnid = e.find("./trn:id", self._ns)
             header = {
-                    "trn_idtype": trnid.attrib.get("type", ""),
-                    "trn_id": trnid.text,
-                    }
+                "trn_idtype": trnid.attrib.get("type", ""),
+                "trn_id": trnid.text,
+            }
             for sp in e.findall("./trn:splits/trn:split", self._ns):
                 spid = sp.find("./split:id", self._ns)
                 actid = sp.find("./split:account", self._ns)
@@ -251,7 +245,7 @@ class Book:
                     "act_idtype": actid.attrib.get("type", ""),
                     "act_id": actid.text,
                     **header,
-                    })
+                })
 
         return pd.DataFrame(items, columns=[
             "idtype",
@@ -267,15 +261,13 @@ class Book:
             "act_id",
             "trn_idtype",
             "trn_id",
-            ]).set_index(["idtype", "id"])
-
+        ]).set_index(["idtype", "id"])
 
     def list_splits(self):
         """Return split (aka line item) entries as flat pandas.DataFrame after joining relevant tables."""
         acts = self.list_accounts().add_prefix("act_")
         trns = self.list_transactions().add_prefix("trn_")
         return self.splits().join(acts, ["act_idtype", "act_id"]).join(trns, ["trn_idtype", "trn_id"])
-
 
     def _findtext_wrapper(self, ns):
         return lambda elem, path, default=None: elem.findtext(path, default, ns)
