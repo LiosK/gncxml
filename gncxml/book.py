@@ -117,14 +117,16 @@ class Book:
             if "toplevel" in e:  # already set
                 return e
             if e["parent"] is None:  # root
-                e["path"] = e["toplevel"] = None
+                e["path"] = e["toplevel"] = e["parent_path"] = None
                 return e
             parent = retrieve_path(items[e["parent"]])
             if parent["toplevel"] is None:  # toplevel
                 e["path"] = e["toplevel"] = e["name"]
+                e["parent_path"] = None
             else:
                 e["path"] = parent["path"] + ":" + e["name"]
                 e["toplevel"] = parent["toplevel"]
+                e["parent_path"] = parent["path"]
             return e
 
         return pd.DataFrame([retrieve_path(e) for e in items.values()], columns=[
@@ -132,13 +134,13 @@ class Book:
             "id",
             "path",
             "toplevel",
+            "parent_path",
+            "name",
             "type",
             "code",
             "description",
             "cmd_space",
             "cmd_id",
-            # "name",
-            # "parent",
         ]).set_index(["idtype", "id"])
 
     def list_accounts(self):

@@ -14286,21 +14286,6 @@ a.anchor-link {
 </div>
 </div>
 
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[2]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="n">pd</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">memory_usage</span> <span class="o">=</span> <span class="kc">False</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
@@ -14309,7 +14294,7 @@ a.anchor-link {
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[3]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[2]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">help</span><span class="p">(</span><span class="n">gncxml</span><span class="o">.</span><span class="n">Book</span><span class="p">)</span>
@@ -14403,7 +14388,7 @@ class Book(builtins.object)
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[4]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[3]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">book</span><span class="o">.</span><span class="n">list_accounts</span><span class="p">()</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
@@ -14428,22 +14413,26 @@ class Book(builtins.object)
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
 <pre>&lt;class &#39;pandas.core.frame.DataFrame&#39;&gt;
 MultiIndex: 284 entries, (&#39;guid&#39;, &#39;64806997695ef7c53fc2e6eef90f6d2b&#39;) to (&#39;guid&#39;, &#39;611d01ac0eae447490efb74e30848f18&#39;)
-Data columns (total 12 columns):
+Data columns (total 14 columns):
  #   Column            Non-Null Count  Dtype  
 ---  ------            --------------  -----  
  0   path              283 non-null    object 
  1   toplevel          283 non-null    object 
- 2   type              284 non-null    object 
- 3   code              34 non-null     object 
- 4   description       277 non-null    object 
- 5   cmd_space         284 non-null    object 
- 6   cmd_id            283 non-null    object 
- 7   cmd_name          283 non-null    object 
- 8   cmd_xcode         45 non-null     object 
- 9   cmd_fraction      283 non-null    object 
- 10  cmd_exponent      283 non-null    float64
- 11  cmd_quote_source  247 non-null    object 
-dtypes: float64(1), object(11)</pre>
+ 2   parent_path       273 non-null    object 
+ 3   name              284 non-null    object 
+ 4   type              284 non-null    object 
+ 5   code              34 non-null     object 
+ 6   description       277 non-null    object 
+ 7   cmd_space         284 non-null    object 
+ 8   cmd_id            283 non-null    object 
+ 9   cmd_name          283 non-null    object 
+ 10  cmd_xcode         45 non-null     object 
+ 11  cmd_fraction      283 non-null    object 
+ 12  cmd_exponent      283 non-null    float64
+ 13  cmd_quote_source  247 non-null    object 
+dtypes: float64(1), object(13)
+memory usage: 42.4+ KB
+</pre>
 </div>
 </div>
 
@@ -14454,7 +14443,7 @@ dtypes: float64(1), object(11)</pre>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[5]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[4]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">book</span><span class="o">.</span><span class="n">list_commodities</span><span class="p">()</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
@@ -14487,7 +14476,9 @@ Data columns (total 5 columns):
  2   fraction      53 non-null     object 
  3   exponent      53 non-null     float64
  4   quote_source  38 non-null     object 
-dtypes: float64(1), object(4)</pre>
+dtypes: float64(1), object(4)
+memory usage: 4.9+ KB
+</pre>
 </div>
 </div>
 
@@ -14498,7 +14489,7 @@ dtypes: float64(1), object(4)</pre>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[6]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[5]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">book</span><span class="o">.</span><span class="n">list_prices</span><span class="p">()</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
@@ -14545,7 +14536,9 @@ Data columns (total 19 columns):
  16  crncy_fraction      4387 non-null   object             
  17  crncy_exponent      4387 non-null   float64            
  18  crncy_quote_source  4387 non-null   object             
-dtypes: datetime64[ns, UTC](1), float64(2), object(16)</pre>
+dtypes: datetime64[ns, UTC](1), float64(2), object(16)
+memory usage: 651.3+ KB
+</pre>
 </div>
 </div>
 
@@ -14556,7 +14549,7 @@ dtypes: datetime64[ns, UTC](1), float64(2), object(16)</pre>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[7]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[6]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">book</span><span class="o">.</span><span class="n">list_splits</span><span class="p">()</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
@@ -14581,7 +14574,7 @@ dtypes: datetime64[ns, UTC](1), float64(2), object(16)</pre>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
 <pre>&lt;class &#39;pandas.core.frame.DataFrame&#39;&gt;
 MultiIndex: 59259 entries, (&#39;guid&#39;, &#39;faf151dc359482b7a8c9a3b877da80ab&#39;) to (&#39;guid&#39;, &#39;3cbdbf9d3e5e4329a4eb58b2db5a0863&#39;)
-Data columns (total 33 columns):
+Data columns (total 35 columns):
  #   Column                  Non-Null Count  Dtype         
 ---  ------                  --------------  -----         
  0   action                  1535 non-null   object        
@@ -14597,27 +14590,31 @@ Data columns (total 33 columns):
  10  trn_id                  59259 non-null  object        
  11  act_path                59259 non-null  object        
  12  act_toplevel            59259 non-null  object        
- 13  act_type                59259 non-null  object        
- 14  act_code                12407 non-null  object        
- 15  act_description         55682 non-null  object        
- 16  act_cmd_space           59259 non-null  object        
- 17  act_cmd_id              59259 non-null  object        
- 18  act_cmd_name            59259 non-null  object        
- 19  act_cmd_xcode           1814 non-null   object        
- 20  act_cmd_fraction        59259 non-null  object        
- 21  act_cmd_exponent        59259 non-null  float64       
- 22  act_cmd_quote_source    54482 non-null  object        
- 23  trn_date                59259 non-null  datetime64[ns]
- 24  trn_num                 10241 non-null  object        
- 25  trn_description         59259 non-null  object        
- 26  trn_crncy_space         59259 non-null  object        
- 27  trn_crncy_id            59259 non-null  object        
- 28  trn_crncy_name          59259 non-null  object        
- 29  trn_crncy_xcode         0 non-null      object        
- 30  trn_crncy_fraction      59259 non-null  object        
- 31  trn_crncy_exponent      59259 non-null  float64       
- 32  trn_crncy_quote_source  54679 non-null  object        
-dtypes: datetime64[ns](1), float64(2), object(30)</pre>
+ 13  act_parent_path         59245 non-null  object        
+ 14  act_name                59259 non-null  object        
+ 15  act_type                59259 non-null  object        
+ 16  act_code                12407 non-null  object        
+ 17  act_description         55682 non-null  object        
+ 18  act_cmd_space           59259 non-null  object        
+ 19  act_cmd_id              59259 non-null  object        
+ 20  act_cmd_name            59259 non-null  object        
+ 21  act_cmd_xcode           1814 non-null   object        
+ 22  act_cmd_fraction        59259 non-null  object        
+ 23  act_cmd_exponent        59259 non-null  float64       
+ 24  act_cmd_quote_source    54482 non-null  object        
+ 25  trn_date                59259 non-null  datetime64[ns]
+ 26  trn_num                 10241 non-null  object        
+ 27  trn_description         59259 non-null  object        
+ 28  trn_crncy_space         59259 non-null  object        
+ 29  trn_crncy_id            59259 non-null  object        
+ 30  trn_crncy_name          59259 non-null  object        
+ 31  trn_crncy_xcode         0 non-null      object        
+ 32  trn_crncy_fraction      59259 non-null  object        
+ 33  trn_crncy_exponent      59259 non-null  float64       
+ 34  trn_crncy_quote_source  54679 non-null  object        
+dtypes: datetime64[ns](1), float64(2), object(32)
+memory usage: 18.6+ MB
+</pre>
 </div>
 </div>
 
@@ -14628,7 +14625,7 @@ dtypes: datetime64[ns](1), float64(2), object(30)</pre>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[8]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[7]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">book</span><span class="o">.</span><span class="n">list_transactions</span><span class="p">()</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
@@ -14666,7 +14663,9 @@ Data columns (total 10 columns):
  7   crncy_fraction      27472 non-null  object        
  8   crncy_exponent      27472 non-null  float64       
  9   crncy_quote_source  25271 non-null  object        
-dtypes: datetime64[ns](1), float64(1), object(8)</pre>
+dtypes: datetime64[ns](1), float64(1), object(8)
+memory usage: 3.4+ MB
+</pre>
 </div>
 </div>
 
@@ -14683,7 +14682,7 @@ dtypes: datetime64[ns](1), float64(1), object(8)</pre>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[9]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[8]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">book</span><span class="o">.</span><span class="n">accounts</span><span class="p">()</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
@@ -14708,17 +14707,21 @@ dtypes: datetime64[ns](1), float64(1), object(8)</pre>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
 <pre>&lt;class &#39;pandas.core.frame.DataFrame&#39;&gt;
 MultiIndex: 284 entries, (&#39;guid&#39;, &#39;64806997695ef7c53fc2e6eef90f6d2b&#39;) to (&#39;guid&#39;, &#39;611d01ac0eae447490efb74e30848f18&#39;)
-Data columns (total 7 columns):
+Data columns (total 9 columns):
  #   Column       Non-Null Count  Dtype 
 ---  ------       --------------  ----- 
  0   path         283 non-null    object
  1   toplevel     283 non-null    object
- 2   type         284 non-null    object
- 3   code         34 non-null     object
- 4   description  277 non-null    object
- 5   cmd_space    284 non-null    object
- 6   cmd_id       283 non-null    object
-dtypes: object(7)</pre>
+ 2   parent_path  273 non-null    object
+ 3   name         284 non-null    object
+ 4   type         284 non-null    object
+ 5   code         34 non-null     object
+ 6   description  277 non-null    object
+ 7   cmd_space    284 non-null    object
+ 8   cmd_id       283 non-null    object
+dtypes: object(9)
+memory usage: 31.3+ KB
+</pre>
 </div>
 </div>
 
@@ -14729,7 +14732,7 @@ dtypes: object(7)</pre>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[10]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[9]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">book</span><span class="o">.</span><span class="n">commodities</span><span class="p">()</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
@@ -14762,7 +14765,9 @@ Data columns (total 5 columns):
  2   fraction      53 non-null     object 
  3   exponent      53 non-null     float64
  4   quote_source  38 non-null     object 
-dtypes: float64(1), object(4)</pre>
+dtypes: float64(1), object(4)
+memory usage: 4.9+ KB
+</pre>
 </div>
 </div>
 
@@ -14773,7 +14778,7 @@ dtypes: float64(1), object(4)</pre>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[11]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[10]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">book</span><span class="o">.</span><span class="n">prices</span><span class="p">()</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
@@ -14810,7 +14815,9 @@ Data columns (total 9 columns):
  6   type         4387 non-null   object             
  7   value        4387 non-null   object             
  8   value_frac   4387 non-null   object             
-dtypes: datetime64[ns, UTC](1), object(8)</pre>
+dtypes: datetime64[ns, UTC](1), object(8)
+memory usage: 308.6+ KB
+</pre>
 </div>
 </div>
 
@@ -14821,7 +14828,7 @@ dtypes: datetime64[ns, UTC](1), object(8)</pre>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[12]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[11]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">book</span><span class="o">.</span><span class="n">splits</span><span class="p">()</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
@@ -14860,7 +14867,9 @@ Data columns (total 11 columns):
  8   act_id         59259 non-null  object
  9   trn_idtype     59259 non-null  object
  10  trn_id         59259 non-null  object
-dtypes: object(11)</pre>
+dtypes: object(11)
+memory usage: 7.7+ MB
+</pre>
 </div>
 </div>
 
@@ -14871,7 +14880,7 @@ dtypes: object(11)</pre>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[13]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[12]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">book</span><span class="o">.</span><span class="n">transactions</span><span class="p">()</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
@@ -14904,7 +14913,9 @@ Data columns (total 5 columns):
  2   description  27472 non-null  object        
  3   crncy_space  27472 non-null  object        
  4   crncy_id     27472 non-null  object        
-dtypes: datetime64[ns](1), object(4)</pre>
+dtypes: datetime64[ns](1), object(4)
+memory usage: 2.3+ MB
+</pre>
 </div>
 </div>
 
