@@ -50,11 +50,18 @@ def _build_argparser():
     parser.add_argument(
         "type",
         choices=[
-            "account", "act", "commodity", "cmdty", "price", "split", "sp",
-            "transaction", "trn",
+            "account",
+            "act",
+            "commodity",
+            "cmdty",
+            "price",
+            "split",
+            "sp",
+            "transaction",
+            "trn",
         ],
         help="type of entries to print (account | commodity | price | split | transaction)",
-        metavar="TYPE"
+        metavar="TYPE",
     )
     parser.add_argument(
         "file",
@@ -62,29 +69,48 @@ def _build_argparser():
         default=sys.stdin.buffer,
         type=argparse.FileType("rb"),
         help="GnuCash data file (XML format)",
-        metavar="FILE"
+        metavar="FILE",
     )
-    parser.add_argument("-l", "--long", action="store_true",
-                        help="list in long format")
-    parser.add_argument("--csv", action="store_true",
-                        help="print in csv format")
+    parser.add_argument("-l", "--long", action="store_true", help="list in long format")
+    parser.add_argument("--csv", action="store_true", help="print in csv format")
     return parser
 
 
 def _get_select_cols(tp):
     return {
         "account": [
-            "path", "toplevel", "code", "description", "cmd_space", "cmd_id",
+            "path",
+            "toplevel",
+            "code",
+            "description",
+            "cmd_space",
+            "cmd_id",
         ],
         "commodity": ["space", "id", "name", "xcode", "exponent"],
         "price": [
-            "time", "cmd_space", "cmd_id", "crncy_space", "crncy_id", "source",
-            "type", "value",
+            "time",
+            "cmd_space",
+            "cmd_id",
+            "crncy_space",
+            "crncy_id",
+            "source",
+            "type",
+            "value",
         ],
         "split": [
-            'trn_date', 'trn_description', 'trn_crncy_space', 'trn_crncy_id',
-            'act_path', 'act_toplevel', 'act_code', 'act_cmd_space',
-            'act_cmd_id', 'memo', 'reconciled', 'quantity', 'value',
+            "trn_date",
+            "trn_description",
+            "trn_crncy_space",
+            "trn_crncy_id",
+            "act_path",
+            "act_toplevel",
+            "act_code",
+            "act_cmd_space",
+            "act_cmd_id",
+            "memo",
+            "reconciled",
+            "quantity",
+            "value",
         ],
         "transaction": ["date", "description", "crncy_space", "crncy_id"],
     }[tp]

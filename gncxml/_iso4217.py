@@ -1,5 +1,6 @@
 # vim: set fileencoding=utf-8 :
 
+
 def get(ccy, default=None):
     return _dump.get(ccy, default)
 
@@ -8,6 +9,7 @@ if __name__ == "__main__":
     """Download and dump ISO4217 current currency list."""
     import urllib.request
     import xml.etree.ElementTree as ET
+
     url = "https://www.currency-iso.org/dam/downloads/lists/list_one.xml"
 
     tree = ET.parse(urllib.request.urlopen(url))
