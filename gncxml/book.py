@@ -65,25 +65,30 @@ class Book:
             exponent = None
             if frac is not None and dec.match(frac):
                 exponent = len(frac) - 1.0  # float to treat NaN
-            items.append({
-                "space": space,
-                "id": cmdid,
-                "name": tx(e, "./cmdty:name", crncy["name"]),
-                "xcode": tx(e, "./cmdty:xcode"),
-                "fraction": frac,
-                "exponent": exponent,
-                "quote_source": tx(e, "./cmdty:quote_source"),
-            })
+            items.append(
+                {
+                    "space": space,
+                    "id": cmdid,
+                    "name": tx(e, "./cmdty:name", crncy["name"]),
+                    "xcode": tx(e, "./cmdty:xcode"),
+                    "fraction": frac,
+                    "exponent": exponent,
+                    "quote_source": tx(e, "./cmdty:quote_source"),
+                }
+            )
 
-        return pd.DataFrame(items, columns=[
-            "space",
-            "id",
-            "name",
-            "xcode",
-            "fraction",
-            "exponent",
-            "quote_source",
-        ]).set_index(["space", "id"])
+        return pd.DataFrame(
+            items,
+            columns=[
+                "space",
+                "id",
+                "name",
+                "xcode",
+                "fraction",
+                "exponent",
+                "quote_source",
+            ],
+        ).set_index(["space", "id"])
 
     def list_commodities(self):
         """Return commodity (aka currency) entries as pandas.DataFrame (synonym for commodities())."""
@@ -96,8 +101,7 @@ class Book:
         items = collections.OrderedDict()
         for e in self._tree.findall("./gnc:book/gnc:account", self._ns):
             cur = e.find("./act:id", self._ns)
-            cur_key = (cur_idtype, cur_id) = (
-                cur.attrib.get("type", ""), cur.text)
+            cur_key = (cur_idtype, cur_id) = (cur.attrib.get("type", ""), cur.text)
             parent = e.find("./act:parent", self._ns)
             if parent is not None:
                 parent = (parent.attrib.get("type", ""), parent.text)
@@ -129,19 +133,22 @@ class Book:
                 e["parent_path"] = parent["path"]
             return e
 
-        return pd.DataFrame([retrieve_path(e) for e in items.values()], columns=[
-            "idtype",
-            "id",
-            "path",
-            "toplevel",
-            "parent_path",
-            "name",
-            "type",
-            "code",
-            "description",
-            "cmd_space",
-            "cmd_id",
-        ]).set_index(["idtype", "id"])
+        return pd.DataFrame(
+            [retrieve_path(e) for e in items.values()],
+            columns=[
+                "idtype",
+                "id",
+                "path",
+                "toplevel",
+                "parent_path",
+                "name",
+                "type",
+                "code",
+                "description",
+                "cmd_space",
+                "cmd_id",
+            ],
+        ).set_index(["idtype", "id"])
 
     def list_accounts(self):
         """Return account entries as flat pandas.DataFrame after joining relevant tables."""
@@ -155,36 +162,43 @@ class Book:
         items = []
         for e in self._tree.findall("./gnc:book/gnc:pricedb/price", self._ns):
             val = Fraction(tx(e, "./price:value"))
-            items.append({
-                "time": pd.Timestamp(tx(e, "./price:time/ts:date")),
-                "cmd_space": tx(e, "./price:commodity/cmdty:space", ""),
-                "cmd_id": tx(e, "./price:commodity/cmdty:id"),
-                "crncy_space": tx(e, "./price:currency/cmdty:space", ""),
-                "crncy_id": tx(e, "./price:currency/cmdty:id"),
-                "source": tx(e, "./price:source"),
-                "type": tx(e, "./price:type", "unknown"),
-                "value": Decimal(val.numerator) / Decimal(val.denominator),
-                "value_frac": val,
-            })
+            items.append(
+                {
+                    "time": pd.Timestamp(tx(e, "./price:time/ts:date")),
+                    "cmd_space": tx(e, "./price:commodity/cmdty:space", ""),
+                    "cmd_id": tx(e, "./price:commodity/cmdty:id"),
+                    "crncy_space": tx(e, "./price:currency/cmdty:space", ""),
+                    "crncy_id": tx(e, "./price:currency/cmdty:id"),
+                    "source": tx(e, "./price:source"),
+                    "type": tx(e, "./price:type", "unknown"),
+                    "value": Decimal(val.numerator) / Decimal(val.denominator),
+                    "value_frac": val,
+                }
+            )
 
-        return pd.DataFrame(items, columns=[
-            "time",
-            "cmd_space",
-            "cmd_id",
-            "crncy_space",
-            "crncy_id",
-            "source",
-            "type",
-            "value",
-            "value_frac",
-        ])
+        return pd.DataFrame(
+            items,
+            columns=[
+                "time",
+                "cmd_space",
+                "cmd_id",
+                "crncy_space",
+                "crncy_id",
+                "source",
+                "type",
+                "value",
+                "value_frac",
+            ],
+        )
 
     def list_prices(self):
         """Return commodity price entries as flat pandas.DataFrame after joining relevant tables."""
         cmds = self.commodities()
-        return self.prices().join(
-            cmds.add_prefix("cmd_"), ["cmd_space", "cmd_id"]
-        ).join(cmds.add_prefix("crncy_"), ["crncy_space", "crncy_id"])
+        return (
+            self.prices()
+            .join(cmds.add_prefix("cmd_"), ["cmd_space", "cmd_id"])
+            .join(cmds.add_prefix("crncy_"), ["crncy_space", "crncy_id"])
+        )
 
     def transactions(self):
         """Return transaction (aka header) entries as pandas.DataFrame."""
@@ -193,25 +207,32 @@ class Book:
         items = []
         for e in self._tree.findall("./gnc:book/gnc:transaction", self._ns):
             trnid = e.find("./trn:id", self._ns)
-            items.append({
-                "idtype": trnid.attrib.get("type", ""),
-                "id": trnid.text,
-                "date": pd.Timestamp(tx(e, "./trn:date-posted/ts:date").split(" ")[0]),
-                "num": tx(e, "./trn:num"),
-                "description": tx(e, "./trn:description"),
-                "crncy_space": tx(e, "./trn:currency/cmdty:space", ""),
-                "crncy_id": tx(e, "./trn:currency/cmdty:id"),
-            })
+            items.append(
+                {
+                    "idtype": trnid.attrib.get("type", ""),
+                    "id": trnid.text,
+                    "date": pd.Timestamp(
+                        tx(e, "./trn:date-posted/ts:date").split(" ")[0]
+                    ),
+                    "num": tx(e, "./trn:num"),
+                    "description": tx(e, "./trn:description"),
+                    "crncy_space": tx(e, "./trn:currency/cmdty:space", ""),
+                    "crncy_id": tx(e, "./trn:currency/cmdty:id"),
+                }
+            )
 
-        return pd.DataFrame(items, columns=[
-            "idtype",
-            "id",
-            "date",
-            "num",
-            "description",
-            "crncy_space",
-            "crncy_id",
-        ]).set_index(["idtype", "id"])
+        return pd.DataFrame(
+            items,
+            columns=[
+                "idtype",
+                "id",
+                "date",
+                "num",
+                "description",
+                "crncy_space",
+                "crncy_id",
+            ],
+        ).set_index(["idtype", "id"])
 
     def list_transactions(self):
         """Return transaction (aka header) entries as flat pandas.DataFrame after joining relevant tables."""
@@ -234,42 +255,51 @@ class Book:
                 actid = sp.find("./split:account", self._ns)
                 val = Fraction(tx(sp, "./split:value"))
                 qty = Fraction(tx(sp, "./split:quantity"))
-                items.append({
-                    "idtype": spid.attrib.get("type", ""),
-                    "id": spid.text,
-                    "action": tx(sp, "./split:action"),
-                    "memo": tx(sp, "./split:memo"),
-                    "reconciled": tx(sp, "./split:reconciled-state"),
-                    "value": Decimal(val.numerator) / Decimal(val.denominator),
-                    "value_frac": val,
-                    "quantity": Decimal(qty.numerator) / Decimal(qty.denominator),
-                    "quantity_frac": qty,
-                    "act_idtype": actid.attrib.get("type", ""),
-                    "act_id": actid.text,
-                    **header,
-                })
+                items.append(
+                    {
+                        "idtype": spid.attrib.get("type", ""),
+                        "id": spid.text,
+                        "action": tx(sp, "./split:action"),
+                        "memo": tx(sp, "./split:memo"),
+                        "reconciled": tx(sp, "./split:reconciled-state"),
+                        "value": Decimal(val.numerator) / Decimal(val.denominator),
+                        "value_frac": val,
+                        "quantity": Decimal(qty.numerator) / Decimal(qty.denominator),
+                        "quantity_frac": qty,
+                        "act_idtype": actid.attrib.get("type", ""),
+                        "act_id": actid.text,
+                        **header,
+                    }
+                )
 
-        return pd.DataFrame(items, columns=[
-            "idtype",
-            "id",
-            "action",
-            "memo",
-            "reconciled",
-            "value",
-            "value_frac",
-            "quantity",
-            "quantity_frac",
-            "act_idtype",
-            "act_id",
-            "trn_idtype",
-            "trn_id",
-        ]).set_index(["idtype", "id"])
+        return pd.DataFrame(
+            items,
+            columns=[
+                "idtype",
+                "id",
+                "action",
+                "memo",
+                "reconciled",
+                "value",
+                "value_frac",
+                "quantity",
+                "quantity_frac",
+                "act_idtype",
+                "act_id",
+                "trn_idtype",
+                "trn_id",
+            ],
+        ).set_index(["idtype", "id"])
 
     def list_splits(self):
         """Return split (aka line item) entries as flat pandas.DataFrame after joining relevant tables."""
         acts = self.list_accounts().add_prefix("act_")
         trns = self.list_transactions().add_prefix("trn_")
-        return self.splits().join(acts, ["act_idtype", "act_id"]).join(trns, ["trn_idtype", "trn_id"])
+        return (
+            self.splits()
+            .join(acts, ["act_idtype", "act_id"])
+            .join(trns, ["trn_idtype", "trn_id"])
+        )
 
     def _findtext_wrapper(self, ns):
         return lambda elem, path, default=None: elem.findtext(path, default, ns)
