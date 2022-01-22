@@ -48,6 +48,6 @@ See also: [examples/module_usage.ipynb](https://github.com/LiosK/gncxml/blob/mas
 
 ## License
 
-Copyright 2017-2021 LiosK
+Copyright 2017-2022 LiosK
 
 Licensed under the Apache License, Version 2.0.
