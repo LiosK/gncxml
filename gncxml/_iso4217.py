@@ -10,7 +10,7 @@ if __name__ == "__main__":
     import urllib.request
     import xml.etree.ElementTree as ET
 
-    url = "https://www.currency-iso.org/dam/downloads/lists/list_one.xml"
+    url = "https://www.six-group.com/dam/download/financial-information/data-center/iso-currrency/lists/list-one.xml"
 
     tree = ET.parse(urllib.request.urlopen(url))
     items = {}
