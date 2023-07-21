@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "gncxml"
-version = "0.6.9"
+version = "0.7.0"
 description = "Extract entries from GnuCash data file to pandas.DataFrame."
 license = "Apache-2.0"
 authors = ["LiosK <contact@mail.liosk.net>"]
@@ -16,10 +16,10 @@ gncxml = "gncxml._cli:main"
 
 [tool.poetry.dependencies]
 python = "^3.8"
-pandas = "^1.5.3"
+pandas = "^2.0"
 
 [tool.poetry.dev-dependencies]
-jupyterlab = "^3.6.5"
+jupyterlab = "^4.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

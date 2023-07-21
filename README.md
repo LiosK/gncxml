@@ -41,7 +41,7 @@ except OSError as err:
 
 # Extract splits as pandas.DataFrame
 df = book.list_splits()
-print(df[df["trn_date"] >= "2017-10-01"].to_csv())
+print(df[df["trn_date"] >= "2023-07-01"].to_csv())
 ```
 
 See also: [examples/module_usage.ipynb](https://github.com/LiosK/gncxml/blob/master/examples/module_usage.ipynb)
