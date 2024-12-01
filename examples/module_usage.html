@@ -7586,46 +7586,46 @@ a.anchor-link {
 <pre>Help on class Book in module gncxml.book:
 
 class Book(builtins.object)
- |  Book(gncfile)
+ |  Book(gncfile) -&gt; None
  |  
  |  Parse GnuCash XML data file and provide interface to read journal entries and master data tables.
  |  
  |  Methods defined here:
  |  
- |  __init__(self, gncfile)
+ |  __init__(self, gncfile) -&gt; None
  |      Parameters
  |      ----------
  |      gncfile : file name or file object (io.BufferedReader)
  |          GnuCash data file (XML format)
  |  
- |  accounts(self)
+ |  accounts(self) -&gt; 'pandas.DataFrame'
  |      Return account entries as pandas.DataFrame.
  |  
- |  commodities(self)
+ |  commodities(self) -&gt; 'pandas.DataFrame'
  |      Return commodity (aka currency) entries as pandas.DataFrame.
  |  
- |  list_accounts(self)
+ |  list_accounts(self) -&gt; 'pandas.DataFrame'
  |      Return account entries as flat pandas.DataFrame after joining relevant tables.
  |  
- |  list_commodities(self)
+ |  list_commodities(self) -&gt; 'pandas.DataFrame'
  |      Return commodity (aka currency) entries as pandas.DataFrame (synonym for commodities()).
  |  
- |  list_prices(self)
+ |  list_prices(self) -&gt; 'pandas.DataFrame'
  |      Return commodity price entries as flat pandas.DataFrame after joining relevant tables.
  |  
- |  list_splits(self)
+ |  list_splits(self) -&gt; 'pandas.DataFrame'
  |      Return split (aka line item) entries as flat pandas.DataFrame after joining relevant tables.
  |  
- |  list_transactions(self)
+ |  list_transactions(self) -&gt; 'pandas.DataFrame'
  |      Return transaction (aka header) entries as flat pandas.DataFrame after joining relevant tables.
  |  
- |  prices(self)
+ |  prices(self) -&gt; 'pandas.DataFrame'
  |      Return commodity price entries as pandas.DataFrame.
  |  
- |  splits(self)
+ |  splits(self) -&gt; 'pandas.DataFrame'
  |      Return split (aka line item) entries as pandas.DataFrame.
  |  
- |  transactions(self)
+ |  transactions(self) -&gt; 'pandas.DataFrame'
  |      Return transaction (aka header) entries as pandas.DataFrame.
  |  
  |  ----------------------------------------------------------------------

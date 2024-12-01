@@ -7,7 +7,7 @@ import gzip
 import re
 import xml.etree.ElementTree as ET
 
-import pandas as pd
+import pandas
 
 import gncxml._iso4217 as iso4217
 
@@ -15,7 +15,7 @@ import gncxml._iso4217 as iso4217
 class Book:
     """Parse GnuCash XML data file and provide interface to read journal entries and master data tables."""
 
-    def __init__(self, gncfile):
+    def __init__(self, gncfile) -> None:
         """
         Parameters
         ----------
@@ -49,7 +49,7 @@ class Book:
             "ts": "http://www.gnucash.org/XML/ts",
         }
 
-    def commodities(self):
+    def commodities(self) -> "pandas.DataFrame":
         """Return commodity (aka currency) entries as pandas.DataFrame."""
         tx = self._findtext_wrapper(self._ns)
 
@@ -77,7 +77,7 @@ class Book:
                 }
             )
 
-        return pd.DataFrame(
+        return pandas.DataFrame(
             items,
             columns=[
                 "space",
@@ -90,11 +90,11 @@ class Book:
             ],
         ).set_index(["space", "id"])
 
-    def list_commodities(self):
+    def list_commodities(self) -> "pandas.DataFrame":
         """Return commodity (aka currency) entries as pandas.DataFrame (synonym for commodities())."""
         return self.commodities()
 
-    def accounts(self):
+    def accounts(self) -> "pandas.DataFrame":
         """Return account entries as pandas.DataFrame."""
         tx = self._findtext_wrapper(self._ns)
 
@@ -133,7 +133,7 @@ class Book:
                 e["parent_path"] = parent["path"]
             return e
 
-        return pd.DataFrame(
+        return pandas.DataFrame(
             [retrieve_path(e) for e in items.values()],
             columns=[
                 "idtype",
@@ -150,12 +150,12 @@ class Book:
             ],
         ).set_index(["idtype", "id"])
 
-    def list_accounts(self):
+    def list_accounts(self) -> "pandas.DataFrame":
         """Return account entries as flat pandas.DataFrame after joining relevant tables."""
         cmds = self.commodities().add_prefix("cmd_")
         return self.accounts().join(cmds, ["cmd_space", "cmd_id"])
 
-    def prices(self):
+    def prices(self) -> "pandas.DataFrame":
         """Return commodity price entries as pandas.DataFrame."""
         tx = self._findtext_wrapper(self._ns)
 
@@ -164,7 +164,7 @@ class Book:
             val = Fraction(tx(e, "./price:value"))
             items.append(
                 {
-                    "time": pd.Timestamp(tx(e, "./price:time/ts:date")),
+                    "time": pandas.Timestamp(tx(e, "./price:time/ts:date")),
                     "cmd_space": tx(e, "./price:commodity/cmdty:space", ""),
                     "cmd_id": tx(e, "./price:commodity/cmdty:id"),
                     "crncy_space": tx(e, "./price:currency/cmdty:space", ""),
@@ -176,7 +176,7 @@ class Book:
                 }
             )
 
-        return pd.DataFrame(
+        return pandas.DataFrame(
             items,
             columns=[
                 "time",
@@ -191,7 +191,7 @@ class Book:
             ],
         )
 
-    def list_prices(self):
+    def list_prices(self) -> "pandas.DataFrame":
         """Return commodity price entries as flat pandas.DataFrame after joining relevant tables."""
         cmds = self.commodities()
         return (
@@ -200,7 +200,7 @@ class Book:
             .join(cmds.add_prefix("crncy_"), ["crncy_space", "crncy_id"])
         )
 
-    def transactions(self):
+    def transactions(self) -> "pandas.DataFrame":
         """Return transaction (aka header) entries as pandas.DataFrame."""
         tx = self._findtext_wrapper(self._ns)
 
@@ -211,7 +211,7 @@ class Book:
                 {
                     "idtype": trnid.attrib.get("type", ""),
                     "id": trnid.text,
-                    "date": pd.Timestamp(
+                    "date": pandas.Timestamp(
                         tx(e, "./trn:date-posted/ts:date").split(" ")[0]
                     ),
                     "num": tx(e, "./trn:num"),
@@ -221,7 +221,7 @@ class Book:
                 }
             )
 
-        return pd.DataFrame(
+        return pandas.DataFrame(
             items,
             columns=[
                 "idtype",
@@ -234,12 +234,12 @@ class Book:
             ],
         ).set_index(["idtype", "id"])
 
-    def list_transactions(self):
+    def list_transactions(self) -> "pandas.DataFrame":
         """Return transaction (aka header) entries as flat pandas.DataFrame after joining relevant tables."""
         cmds = self.commodities().add_prefix("crncy_")
         return self.transactions().join(cmds, ["crncy_space", "crncy_id"])
 
-    def splits(self):
+    def splits(self) -> "pandas.DataFrame":
         """Return split (aka line item) entries as pandas.DataFrame."""
         tx = self._findtext_wrapper(self._ns)
 
@@ -272,7 +272,7 @@ class Book:
                     }
                 )
 
-        return pd.DataFrame(
+        return pandas.DataFrame(
             items,
             columns=[
                 "idtype",
@@ -291,7 +291,7 @@ class Book:
             ],
         ).set_index(["idtype", "id"])
 
-    def list_splits(self):
+    def list_splits(self) -> "pandas.DataFrame":
         """Return split (aka line item) entries as flat pandas.DataFrame after joining relevant tables."""
         acts = self.list_accounts().add_prefix("act_")
         trns = self.list_transactions().add_prefix("trn_")
