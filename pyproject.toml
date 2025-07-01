@@ -1,6 +1,6 @@
 [project]
 name = "gncxml"
-version = "0.7.14"
+version = "0.7.15"
 description = "Extract entries from GnuCash data file to pandas.DataFrame."
 authors = [{name = "LiosK",email = "contact@mail.liosk.net"}]
 license = {text = "Apache-2.0"}
