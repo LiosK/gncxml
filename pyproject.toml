@@ -22,7 +22,7 @@ classifiers = [
 ]
 
 [tool.poetry.group.dev.dependencies]
-jupyterlab = ">=4.4"
+jupyterlab = ">=4.5"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
