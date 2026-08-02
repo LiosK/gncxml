@@ -22,7 +22,7 @@ positional arguments:
               transaction)
   FILE        GnuCash data file (XML format)
 
-optional arguments:
+options:
   -h, --help  show this help message and exit
   -l, --long  list in long format
   --csv       print in csv format
