@@ -33,7 +33,7 @@ def main():
         tp = "transaction"
         df = book.list_transactions()
 
-    df.reset_index(inplace=True)
+    df = df.reset_index()
     if not args.long:
         df = df[_get_select_cols(tp)]
 
